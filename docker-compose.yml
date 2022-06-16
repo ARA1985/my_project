@@ -1,0 +1,46 @@
+version: '3'
+services:
+    # frontend3:
+    #     build:
+    #         context: .
+    #         dockerfile: docker/Dockerfile_frontend3
+    #     working_dir: /frontend
+    #     command: tail -f /dev/null
+    #     #command: /bin/bash -c "[[ ! -L node_modules ]] && ln -s /tmp/node_modules node_modules; yarn build"
+    #     #command: echo "Hello! If you'd like to build static files then open docker-compose.yml and uncomment line 26 and comment line 27."
+    #     volumes:
+    #         - ./pkgform:/frontend
+    #     ports:
+    #         - 3000:3000
+    db:
+        image: postgres
+        environment:
+            - POSTGRES_PASSWORD=secret
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+        volumes:
+            - ./docker/dump:/docker-entrypoint-initdb.d
+            - ./docker/db:/var/lib/postgresql/data
+        ports:
+            - 5432:5432
+        networks:
+            - app-network
+    web:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile_python
+        working_dir: /web/app/blogengine
+        # environment:
+            # - DJANGO_SETTINGS_MODULE=mylogistic.settings.local_docker
+        command: bash -c "python manage.py migrate && python manage.py initadmin && python manage.py runserver 0.0.0.0:8000"
+        volumes:
+            - ./web:/web
+        ports:
+            - 8000:8000
+        networks:
+            - app-network
+        depends_on:
+            - db
+networks:
+    app-network:
+        driver: bridge
