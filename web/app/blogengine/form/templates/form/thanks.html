@@ -1,0 +1,17 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+<h2>Last form data</h2>
+{% if latest_data %}
+{% for customer in latest_data%}
+    <ul>
+        <li><b>Name: </b>{{ customer.name }}</li>
+        <li><b>Email: </b>{{ customer.email }}</li>
+        <li><b>Telephone: </b>{{ customer.telephone }}</li>
+        <li><b>Created: </b>{{ customer.created }}</li>
+    </ul>
+    {% endfor %}
+{% else %}
+    <p>No data are available.</p>
+{% endif %}
+{% endblock %}
