@@ -23,8 +23,6 @@ services:
             - ./docker/db:/var/lib/postgresql/data
         ports:
             - 5432:5432
-        networks:
-            - app-network
     web:
         build:
             context: .
@@ -37,10 +35,5 @@ services:
             - ./web:/web
         ports:
             - 8000:8000
-        networks:
-            - app-network
         depends_on:
             - db
-networks:
-    app-network:
-        driver: bridge
